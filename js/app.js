@@ -476,7 +476,7 @@ function gemBugCollision(enemy, gem) {
   }
   if(enemy.y === gem.y) {
     // check if the gem.x co-ordinate is within a range of the enemy-bug.x co-ordinate because the enemy co-ordinate will mostly be a float point value, so checking for range is the safest means of checking for collision
-    if ((gem.x <= enemy.x + 75) && (gem.x >= enemy.x - 40)) {
+    if ((gem.x <= enemy.x + 75) && (gem.x >= enemy.x - 75)) {
       // if collision occurs, regenerate the gem
       gem.generate();
     }
