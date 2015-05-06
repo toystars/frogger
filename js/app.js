@@ -15,12 +15,21 @@ var Enemy = function() {
   // Variables applied to each of our instances go here,
   // we've provided one for you to get started
 
+  // define the starting location of enemy bug
+  this.startPosition;
+  var randomNumber = Math.random();
+  if (randomNumber < 0.5) {
+    this.startPosition = 'left';
+  } else {
+    this.startPosition = 'right';
+  }
+
   // Define positions
   this.x;
   this.y;
 
   // Define the default speed
-  this.speed = 100 // Math.floor((Math.random() * 150) + 50);
+  this.speed = Math.floor((Math.random() * 150) + 50);
 
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
@@ -35,12 +44,18 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     // regenerate
 
-    if (this.x > 780) {
-      this.configureEnemy();
+    if ((this.startPosition == 'left') && (this.x > 780)) {
+      this.configureEnemy(this.startPosition);
+    } else if ((this.startPosition == 'right') && (this.x < -100)) {
+      this.configureEnemy(this.startPosition);
     }
 
-    // update x
-    this.x += dt * this.speed;
+    // update x based on the bug startPosition
+    if (this.startPosition == 'left') {
+      this.x += dt * this.speed;
+    } else {
+      this.x -= dt * this.speed;
+    }
 }
 
 // Draw the enemy on the screen, required method for game
@@ -55,7 +70,7 @@ Enemy.prototype.render = function() {
 }
 
 // Create enemies with the right coordinates
-Enemy.prototype.configureEnemy = function() {
+Enemy.prototype.configureEnemy = function(playerPosition) {
   // Create a random y coordinate
   var randomY = Math.floor((Math.random() * 4) + 1);
   if (randomY == 1) {
@@ -69,14 +84,21 @@ Enemy.prototype.configureEnemy = function() {
   }
 
   // create a random starting point for all enemy objects for them to appear on canvas at different times
-  this.x = Math.floor((Math.random() * -550) - 150);
+  // based on their startPosition property
+  if (playerPosition == 'left') {
+    this.x = Math.floor((Math.random() * -550) - 150);
+  } else {
+    this.x = Math.floor((Math.random() * 1000) + 800);
+  }
 
+  /*
   // create a check to see if x co-ordinate created for enemy is equal or even close
   // to another one to avoid the stacking of enemies on one another
   while ((this.x >= enemyPosition + 150) && (this.x <= enemyPosition - 150)) {
     this.x = Math.floor((Math.random() * -350) - 150);
   }
   enemyPosition = this.x;
+  */
 }
 
 // Now write your own player class
@@ -300,11 +322,11 @@ var gameOver = false;
 // create 3 enemy objects
 for (var x = 1; x <= 7; x++) {
   // create an enemy with a random speed already defined in the class definition.
-  var enemy1 = new Enemy();
+  var enemy = new Enemy();
   // configure enemy to determine its x and y co-ordinates
-  enemy1.configureEnemy();
+  enemy.configureEnemy(enemy.startPosition);
   // push each configured enemy into the array
-  allEnemies.push(enemy1);
+  allEnemies.push(enemy);
 }
 
 // This listens for key presses and sends the keys to your
@@ -333,7 +355,7 @@ function checkCollisions(enemy, player) {
    // check if both objects have the same y co-ordinate
   if(enemy.y === player.y) {
     // check if the player.x co-ordinate is within a range of the enemy-bug.x co-ordinate because the enemy co-ordinate will mostly be a float point value, so checking for range is the safest means of checking for collision
-    if ((player.x <= enemy.x + 75) && (player.x >= enemy.x - 40)) {
+    if ((player.x <= enemy.x + 75) && (player.x >= enemy.x - 75)) {
       // play bugDeathSound audio effect
       if (bugDeathSound) {
         bugDeathSound.currentTime = 0;
@@ -364,7 +386,7 @@ function evaluateLife() {
     document.getElementById('lives').innerHTML = document.getElementById('lives').innerHTML - 1;
     // loop through all Enemy object and reconfigure them
     for (var x in allEnemies) {
-      allEnemies[x].configureEnemy();
+      allEnemies[x].configureEnemy(allEnemies[x].startPosition);
     }
     gem.generate(); // regenerate the gem in a different location
   } else {
@@ -374,7 +396,7 @@ function evaluateLife() {
     gem.x = -200;
     gem.y = -200;
     gameOver = true; // sets the gameOver variable to true to indicate that the game is over and the player object shouldn't respond to any event again.
-    document.getElementById('live-scores-level-div').innerHTML = '<a href="#" onclick="location.reload()">Replay</a>' + '<br />You got ' + document.getElementById('scores').innerHTML + ' points.'; // display a message telling the user to try the game again
+    document.getElementById('live-scores-level-div').innerHTML = '<a id="scores" href="#" onclick="location.reload()">Replay</a>' + '<br /><p id="level">You got ' + document.getElementById('scores').innerHTML + ' points.</p>'; // display a message telling the user to try the game again
   }
 }
 
