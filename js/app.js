@@ -1,6 +1,9 @@
 // godMode cheat Variable
 var godMode = false;
 
+// x position variable to be used for position check for enemy bugs
+var enemyPosition = 500; // any random value
+
 // sound variable
 var bugDeathSound = document.getElementById('bugDeath');
 var gemPickerSound = document.getElementById('gemPicker');
@@ -17,7 +20,7 @@ var Enemy = function() {
   this.y;
 
   // Define the default speed
-  this.speed = Math.floor((Math.random() * 150) + 50);
+  this.speed = 100 // Math.floor((Math.random() * 150) + 50);
 
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
@@ -66,11 +69,14 @@ Enemy.prototype.configureEnemy = function() {
   }
 
   // create a random starting point for all enemy objects for them to appear on canvas at different times
-  this.x = Math.floor((Math.random() * -350) - 150);
+  this.x = Math.floor((Math.random() * -550) - 150);
 
   // create a check to see if x co-ordinate created for enemy is equal or even close
   // to another one to avoid the stacking of enemies on one another
-  var enemyPositionCheckArray = [];
+  while ((this.x >= enemyPosition + 150) && (this.x <= enemyPosition - 150)) {
+    this.x = Math.floor((Math.random() * -350) - 150);
+  }
+  enemyPosition = this.x;
 }
 
 // Now write your own player class
@@ -129,13 +135,17 @@ Player.prototype.handleInput = function(arg) {
       lifeCollected(this, life); // invokes the lifeCollected function to check if life was collected
     } else {
       // crashed in water
-      if (waterSound) {
-        waterSound.currentTime = 0;
-        waterSound.play();
+      if (godMode) {
+        
+      } else {
+        if (waterSound) {
+          waterSound.currentTime = 0;
+          waterSound.play();
+        }
+        this.x = 401;
+        this.y = 380;
+        evaluateLife(this, gem);
       }
-      this.x = 401;
-      this.y = 380;
-      evaluateLife(this, gem);
     }
   } else if (arg == 'down') {
     // Add 80 to y coordinate after checking for the boundary
@@ -440,6 +450,9 @@ function addLife() {
   Function to change gem location in case of collision with bug
 */
 function gemBugCollision(enemy, gem) {
+  if (godMode) {
+    return;
+  }
   if(enemy.y === gem.y) {
     // check if the gem.x co-ordinate is within a range of the enemy-bug.x co-ordinate because the enemy co-ordinate will mostly be a float point value, so checking for range is the safest means of checking for collision
     if ((gem.x <= enemy.x + 75) && (gem.x >= enemy.x - 40)) {
