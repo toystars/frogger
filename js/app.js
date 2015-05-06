@@ -20,8 +20,10 @@ var Enemy = function() {
   var randomNumber = Math.random();
   if (randomNumber < 0.5) {
     this.startPosition = 'left';
+    this.sprite = 'images/enemy-bug-fr.png';
   } else {
     this.startPosition = 'right';
+    this.sprite = 'images/enemy-bug-bk.png';
   }
 
   // Define positions
@@ -31,9 +33,6 @@ var Enemy = function() {
   // Define the default speed
   this.speed = Math.floor((Math.random() * 150) + 50);
 
-  // The image/sprite for our enemies, this uses
-  // a helper we've provided to easily load images
-  this.sprite = 'images/enemy-bug.png';
 }
 
 // Update the enemy's position, required method for game
