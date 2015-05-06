@@ -7,21 +7,6 @@ var gemPickerSound = document.getElementById('gemPicker');
 var waterSound = document.getElementById('waterCrashed');
 var levelSound = document.getElementById('levelUp');
 
-function playBackgroundMusic(music) {
-  music.play();
-  music.volume = 0.1;
-}
-
-// background sound
-var backgroundSound = new Audio('sounds/mario.mp3'); 
-backgroundSound.addEventListener('ended', function() {
-    this.currentTime = 0;
-    playBackgroundMusic(this);
-}, false);
-
-backgroundSound.play();
-backgroundSound.volume = 0.1;
-
 // Enemies our player must avoid
 var Enemy = function() {
   // Variables applied to each of our instances go here,
@@ -66,7 +51,7 @@ Enemy.prototype.render = function() {
   gemBugCollision(this, gem);
 }
 
-// Create enemies with the right coordinates and speed
+// Create enemies with the right coordinates
 Enemy.prototype.configureEnemy = function() {
   // Create a random y coordinate
   var randomY = Math.floor((Math.random() * 4) + 1);
@@ -82,6 +67,10 @@ Enemy.prototype.configureEnemy = function() {
 
   // create a random starting point for all enemy objects for them to appear on canvas at different times
   this.x = Math.floor((Math.random() * -350) - 150);
+
+  // create a check to see if x co-ordinate created for enemy is equal or even close
+  // to another one to avoid the stacking of enemies on one another
+  var enemyPositionCheckArray = [];
 }
 
 // Now write your own player class
@@ -370,7 +359,6 @@ function evaluateLife() {
     gem.generate(); // regenerate the gem in a different location
   } else {
     // Else if the innerHTML returns 0 or less
-    backgroundSound.pause(); // pause the background music
     allEnemies = []; // then the allEnemies array is reinitialized to an empty array to stop the movement of the enemies on the canvas
     // reset the gem co-ordinates
     gem.x = -200;
