@@ -1,9 +1,6 @@
 // godMode cheat Variable
 var godMode = false;
 
-// x position variable to be used for position check for enemy bugs
-var enemyPosition = 500; // any random value
-
 // sound variable
 var bugDeathSound = document.getElementById('bugDeath');
 var gemPickerSound = document.getElementById('gemPicker');
@@ -89,15 +86,6 @@ Enemy.prototype.configureEnemy = function(playerPosition) {
   } else {
     this.x = Math.floor((Math.random() * 1000) + 800);
   }
-
-  /*
-  // create a check to see if x co-ordinate created for enemy is equal or even close
-  // to another one to avoid the stacking of enemies on one another
-  while ((this.x >= enemyPosition + 150) && (this.x <= enemyPosition - 150)) {
-    this.x = Math.floor((Math.random() * -350) - 150);
-  }
-  enemyPosition = this.x;
-  */
 }
 
 // Now write your own player class
